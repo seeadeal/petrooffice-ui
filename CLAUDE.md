@@ -1,33 +1,31 @@
-# PetroOffice UI — wire two backends
+# CLAUDE — wire PetroOffice UI (do not restyle)
 
-Drop this folder (or this whole markdown) into Claude. **Do not restyle.** Keep the petrol-teal night palette, IBM Plex, dock chrome, and Floor phone shell exactly.
+You are implementing backends behind a finished UI. Copy the source files in this repo as-is. Do not change layout, palette, type, or chrome.
 
-## What this is
+## Two products
 
-Two products, one UI kit:
-
-| App | Viewport | Chrome | Store hook | Backend you own |
+| App | When | Chrome | Hook | Your backend |
 |---|---|---|---|---|
-| **PetroOffice** (desk) | `md+` | floating dock | `useOffice` | Office API |
-| **Floor** (phone) | `< md` | iOS-style tab bar | `useFloor` | Floor API |
+| PetroOffice (desk) | width ≥ 768px | floating bottom dock | `useOffice` | Office API |
+| Floor (phone) | width < 768px | native tab bar | `useFloor` | Floor API |
 
-They must **not** share rows. Posting a price on Floor must not change Office.
+They MUST NOT share rows. A price post or BOL accept on Floor must leave Office unchanged.
 
-Demo store: Northline Petroleum, store **#0121 Main Street**, Harrisburg. Manager **Jordan Hale (JH)**. Clock frozen at **Fri, Aug 28 · 2:14 PM**.
+Store: Northline Petroleum · #0121 Main Street · Harrisburg · Jordan Hale (JH) · clock frozen Fri, Aug 28 · 2:14 PM.
 
-## Do this
+## Your job
 
-1. Scaffold TanStack Start + Tailwind v4 + the deps in `package.json`.
-2. Copy every `src/**` file as-is.
-3. Replace `src/lib/station-store.ts` `commit` / `hydrate` so:
-   - `useOffice` talks only to the **Office** backend
-   - `useFloor` talks only to the **Floor** backend
-4. Keep method names and argument shapes on `StationState`. Every screen already calls them.
-5. Seed each backend independently from `src/lib/seed.ts` (same shape, separate databases).
+1. Scaffold TanStack Start + React 19 + Tailwind v4 + Zustand + the deps in package.json.
+2. Keep every file at its path.
+3. Replace only `commit` / `hydrate` inside `src/lib/station-store.ts` (and the two thin wrappers `src/lib/store.ts` + `src/lib/floor/store.ts`) so:
+   - Office GET/POST hits the Office backend
+   - Floor GET/POST hits the Floor backend
+4. Keep every `StationState` method name and argument shape. Screens already call them.
+5. Seed each backend independently from `src/lib/seed.ts`.
 
 ## Store contract (do not rename)
 
-```ts
+```
 select(id)
 postPrice(id, posted)
 matchCompetitor(id)
@@ -42,17 +40,17 @@ receiveSku(id, qty)
 markCompliance(id, status)
 ```
 
-Snapshot fields: `tanks prices deliveries shifts exceptions inventory compliance scheduled priceLog selectedId`.
+Snapshot: tanks, prices, deliveries, shifts, exceptions, inventory, compliance, scheduled, priceLog, selectedId.
 
-`hydrateOffice()` / `hydrateFloor()` run once on app mount (`app-shell.tsx`). Point those at `GET` snapshot. Mutations should round-trip a full snapshot (or patch the same fields).
+Mutations in `src/lib/station-ops.ts` (`StationMutation` discriminated union). Round-trip a full snapshot (or patch the same fields).
 
 ## Visual rules
 
-- Tokens live in `src/styles.css` (`#0c1012` night, `#7dbeb6` petrol, `#f4f0e6` paper).
-- No new colors, no extra fonts, no purple, no emoji-as-icons.
-- Dock is **desk only**. Floor tab bar is **phone only** (`md:hidden` / `hidden md:contents` in `app-shell.tsx`).
-- Tap targets ≥ 44px on phone. No horizontal overflow at 390px.
-- Export page prints a paper close packet + tidy CSV (`export-today.ts`).
+- Tokens: `src/styles.css` — night `#0c1012`, petrol `#7dbeb6`, paper `#f4f0e6`, IBM Plex Sans + Mono.
+- No new colors, fonts, gradients, or emoji-as-icons.
+- Dock = desk only. Floor tab bar = phone only (`md:hidden` / `hidden md:contents` in app-shell).
+- Phone tap targets ≥ 44px. No overflow at 390px.
+- Export = paper close packet + tidy CSV (`export-today.ts`).
 
 ## Routes
 
@@ -60,6 +58,6 @@ Snapshot fields: `tanks prices deliveries shifts exceptions inventory compliance
 
 Phone tabs: Today, Fuel, Loads, Sales, More. More stacks Store / Books / Rules / Close.
 
-## Out of scope for the paste
+## Out of scope
 
-Auth, Neon, Grok preview bridge — omitted on purpose. You wire persistence.
+Auth, Grok preview, and any existing SQL are omitted. You own persistence.
