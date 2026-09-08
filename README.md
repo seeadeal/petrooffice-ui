@@ -1,7 +1,12 @@
 # PetroOffice UI kit
 
-Finished desk dock + Floor phone UI. Hand this repo to Claude with [CLAUDE.md](./CLAUDE.md).
+Finished UI for two apps: **PetroOffice** (desk dock) and **Floor** (phone). Do not restyle.
 
-Claude wires two backends (`useOffice` / `useFloor`). Do not restyle.
+**Paste this into Claude:** [PETRO-UI.md](https://raw.githubusercontent.com/seeadeal/petrooffice-ui/main/PETRO-UI.md)
 
-Full one-file paste: [PETRO-UI.md](./PETRO-UI.md).
+Claude wires backends only. Search `WIRE HERE` in:
+
+- `src/lib/store.ts` — Office API (desk)
+- `src/lib/floor/store.ts` — Floor API (phone)
+
+The two backends must not share rows.

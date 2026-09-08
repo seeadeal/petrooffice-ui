@@ -1,6 +1,8 @@
 # CLAUDE — wire PetroOffice UI (do not restyle)
 
-You are implementing backends behind a finished UI. Copy the source files in this repo as-is. Do not change layout, palette, type, or chrome.
+You are implementing backends behind a finished UI. Copy every file below as-is. Do not change layout, palette, type, or chrome.
+
+The kit already runs on local Zustand. Your job is persistence — two backends.
 
 ## Two products
 
@@ -15,11 +17,11 @@ Store: Northline Petroleum · #0121 Main Street · Harrisburg · Jordan Hale (JH
 
 ## Your job
 
-1. Scaffold TanStack Start + React 19 + Tailwind v4 + Zustand + the deps in package.json.
-2. Keep every file at its path.
-3. Replace only `commit` / `hydrate` inside `src/lib/station-store.ts` (and the two thin wrappers `src/lib/store.ts` + `src/lib/floor/store.ts`) so:
-   - Office GET/POST hits the Office backend
-   - Floor GET/POST hits the Floor backend
+1. Scaffold TanStack Start + React 19 + Tailwind v4 + Zustand using the `package.json` in this kit.
+2. Paste every file at the path in its heading.
+3. Wire only these two files:
+   - `src/lib/store.ts` — Office GET/POST (search `WIRE HERE`)
+   - `src/lib/floor/store.ts` — Floor GET/POST (search `WIRE HERE`)
 4. Keep every `StationState` method name and argument shape. Screens already call them.
 5. Seed each backend independently from `src/lib/seed.ts`.
 
@@ -42,13 +44,15 @@ markCompliance(id, status)
 
 Snapshot: tanks, prices, deliveries, shifts, exceptions, inventory, compliance, scheduled, priceLog, selectedId.
 
-Mutations in `src/lib/station-ops.ts` (`StationMutation` discriminated union). Round-trip a full snapshot (or patch the same fields).
+Mutations: `src/lib/station-ops.ts` (`StationMutation`). Round-trip a full snapshot.
+
+`load` = GET snapshot. `mutate` = apply one mutation, return snapshot.
 
 ## Visual rules
 
 - Tokens: `src/styles.css` — night `#0c1012`, petrol `#7dbeb6`, paper `#f4f0e6`, IBM Plex Sans + Mono.
 - No new colors, fonts, gradients, or emoji-as-icons.
-- Dock = desk only. Floor tab bar = phone only (`md:hidden` / `hidden md:contents` in app-shell).
+- Dock = desk only. Floor tab bar = phone only.
 - Phone tap targets ≥ 44px. No overflow at 390px.
 - Export = paper close packet + tidy CSV (`export-today.ts`).
 
@@ -60,4 +64,4 @@ Phone tabs: Today, Fuel, Loads, Sales, More. More stacks Store / Books / Rules /
 
 ## Out of scope
 
-Auth, Grok preview, and any existing SQL are omitted. You own persistence.
+Auth. You own persistence.
